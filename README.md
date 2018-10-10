@@ -169,6 +169,9 @@ Prediction by trained U-net:
 
 Extract additional training patches from false positive regions
 
+ - [Code for generate index of false positive patches](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Generate_Index_For_False_Positive_Patches.py)
+ - [Code for generate patches and its mask files](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Generate_False_Positive_Patches.py)
+
 ## 4 - Prediction and Evaluation
 ### 4.1 Make predictions and construct heatmaps
 
@@ -194,9 +197,7 @@ Comparison of predicted with ground truth for tumor_005:
 
 ![alt text](https://github.com/3dimaging/Accessory/blob/master/49285XZv.png)
 
-#### Hard Negative Mining
- - [Code for generate index of false positive patches](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Generate_Index_For_False_Positive_Patches.py)
- - [Code for generate patches and its mask files](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Generate_False_Positive_Patches.py)
+
     
 ### 4.2a Slide-based Classification
 
