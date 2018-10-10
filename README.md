@@ -80,18 +80,18 @@ To reduce computation, the blank regions (no tissue) on slide will be excluded.
 	   
   The color variety among patches
 	   
- <img src="https://github.com/3dimaging/Accessory/blob/master/color%20variety.png" width="350">
+ <img src="https://github.com/3dimaging/Accessory/blob/master/color%20variety.png" width="500">
 
 	   
   The patches before and after stain normalization
 	   
- <img src="https://github.com/3dimaging/Accessory/blob/master/stain%20normalization.png" width="350">
+ <img src="https://github.com/3dimaging/Accessory/blob/master/stain%20normalization.png" width="500">
 
 	   
 - flip
 - adding color noise (Method II)
 	   
- <img src="https://github.com/3dimaging/Accessory/blob/master/patch%20flip%20noise.png" width="350">
+ <img src="https://github.com/3dimaging/Accessory/blob/master/patch%20flip%20noise.png" width="500">
 
 	   
 	   
@@ -102,10 +102,13 @@ To reduce computation, the blank regions (no tissue) on slide will be excluded.
 #### Step 3 : Image Generator
 
  Patches:
- ![alt text](https://github.com/3dimaging/Accessory/blob/master/patches.png)
+ <img src="https://github.com/3dimaging/Accessory/blob/master/patches.png" width="350">
+ 
  
  Ground Truth:
- ![alt text](https://github.com/3dimaging/Accessory/blob/master/patche%20ground%20truth.png)
+ <img src="https://github.com/3dimaging/Accessory/blob/master/patche%20ground%20truth.png" width="350">
+
+
 
 ## 3 - Training Neural Network
 	
@@ -184,7 +187,7 @@ Heatmap is a way to display the probability
 
 Put all the patches together and get prediction for the whole slide ([code for heatmap generation based on predicted values](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Heatmap_generation.py)). 
 
-#### Heatmap Examples
+#### Heatmap Examples (From GoogleNet Prediction Only)
 Heatmap for tumor_026:
 
 ![alt text](https://github.com/3dimaging/Accessory/blob/master/99262ES.png)
