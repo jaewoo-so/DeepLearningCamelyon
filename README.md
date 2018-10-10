@@ -102,11 +102,13 @@ To reduce computation, the blank regions (no tissue) on slide will be excluded.
 #### Step 3 : Image Generator
 
  Patches:
- <img src="https://github.com/3dimaging/Accessory/blob/master/patches.png" width="350">
+ 
+ <img src="https://github.com/3dimaging/Accessory/blob/master/patches.png" width="500">
  
  
  Ground Truth:
- <img src="https://github.com/3dimaging/Accessory/blob/master/patche%20ground%20truth.png" width="350">
+ 
+ <img src="https://github.com/3dimaging/Accessory/blob/master/patche%20ground%20truth.png" width="500">
 
 
 
