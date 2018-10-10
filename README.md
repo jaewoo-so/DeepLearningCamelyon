@@ -181,7 +181,7 @@ Heatmap is a way to display the probability
 
 Put all the patches together and get prediction for the whole slide ([code for heatmap generation based on predicted values](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Heatmap_generation.py)). 
 
-#### Results
+#### Heatmap Examples
 Heatmap for tumor_026:
 
 ![alt text](https://github.com/3dimaging/Accessory/blob/master/99262ES.png)
@@ -193,6 +193,10 @@ The overview of heatmap for tumor_026:
 Comparison of predicted with ground truth for tumor_005:
 
 ![alt text](https://github.com/3dimaging/Accessory/blob/master/49285XZv.png)
+
+#### Hard Negative Mining
+ - Code for generate index of false positive patches
+ - Code for generate patches and its mask files
     
 ### 4.2a Slide-based Classification
 
