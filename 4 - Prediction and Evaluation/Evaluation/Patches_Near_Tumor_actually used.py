@@ -35,8 +35,12 @@ print('Hi, patch extraction can take a while, please be patient...')
 slide_path = '/home/wli/Downloads/CAMELYON16/training/tumor'
 slide_path_normal = '/home/wli/Downloads/CAMELYON16/training/normal'
 
-anno_path = '/home/wli/Downloads/CAMELYON16/training/Lesion_annotations'
-BASE_TRUTH_DIR = '/home/wli/Downloads/CAMELYON16/masking'
+slide_path = '/Users/liw17/Documents/camelyon16/train/tumor/'
+truth_path = '/Users/liw17/Documents/camelyon16/train/mask/'
+
+anno_path = '/Users/liw17/Documents/camelyon16/train/'
+#anno_path = '/home/wli/Downloads/CAMELYON16/training/Lesion_annotations'
+BASE_TRUTH_DIR = '/Users/liw17/Documents/camelyon16/train/mask/'
 slide_paths = glob.glob(osp.join(slide_path, '*.tif'))
 slide_paths.sort()
 slide_paths_normal = glob.glob(osp.join(slide_path_normal, '*.tif'))
@@ -83,25 +87,36 @@ def convert_xml_df(file):
     return (df_xml)
 
 
-def random_crop(slide, truth, thresh, crop_size, bbox):
+def random_crop(slide, truth, crop_size, bbox):
 
     #width, height = slide.level_dimensions[0]
     dy, dx = crop_size
     x, y = bbox
+    x = int(x)
+    y = int(y)
+    print(x, y)
     index = [[x, y], [x, y+dy-1], [x-dx+1, y], [x-dx+1, y+dy-1]]
     # print(index)
     #cropped_img = (image[x:(x+dx), y:(y+dy),:], rgb_binary[x:(x+dx), y:(y+dy)], mask[x:(x+dx), y:(y+dy)])
     rgb_image1 = slide.read_region((x, y), 0, crop_size)
     rgb_mask1 = truth.read_region((x, y), 0, crop_size)
+    rgb_mask1 = (cv2.cvtColor(np.array(rgb_mask1),
+                              cv2.COLOR_RGB2GRAY) > 0).astype(int)
 
     rgb_image2 = slide.read_region((x, y+dy-1), 0, crop_size)
     rgb_mask2 = truth.read_region((x, y+dy-1), 0, crop_size)
+    rgb_mask2 = (cv2.cvtColor(np.array(rgb_mask2),
+                              cv2.COLOR_RGB2GRAY) > 0).astype(int)
 
     rgb_image3 = slide.read_region((x-dx+1, y), 0, crop_size)
     rgb_mask3 = truth.read_region((x-dx+1, y), 0, crop_size)
+    rgb_mask3 = (cv2.cvtColor(np.array(rgb_mask3),
+                              cv2.COLOR_RGB2GRAY) > 0).astype(int)
 
     rgb_image4 = slide.read_region((x-dx+1, y+dy-1), 0, crop_size)
     rgb_mask4 = truth.read_region((x-dx+1, y+dy-1), 0, crop_size)
+    rgb_mask4 = (cv2.cvtColor(np.array(rgb_mask4),
+                              cv2.COLOR_RGB2GRAY) > 0).astype(int)
 
     # rgb_mask = (cv2.cvtColor(np.array(rgb_mask),
     #                         cv2.COLOR_RGB2GRAY) > 0).astype(int)
@@ -129,29 +144,29 @@ while i < len(slide_paths):
 
         with openslide.open_slide(str(truth_slide_path)) as truth:
 
-            slide = openslide.open_slide(slide_paths_total[i])
+            #slide = openslide.open_slide(slide_paths_total[i])
             annotations = convert_xml_df(str(Anno_pathxml))
             x_values = list(annotations['X'].get_values())
             y_values = list(annotations['Y'].get_values())
             bbox = zip(x_values, y_values)
+            bbox = list(bbox)
 
             m = 0
             while m in range(0, len(bbox)):
-                r = random_crop(slide, truth, thresh, crop_size, bbox[m])
+                r = random_crop(slide, truth, crop_size, bbox[m])
                 for n in range(0, 4):
-                    if (cv2.countNonZero(r[n+4]) == 0) and (m <= 1000):
+                    if (cv2.countNonZero(r[n+4]) == 0):
 
-                        saveim('/home/wli/Downloads/test/tumor/%s_%d_%d.png' %
+                        saveim('/Users/liw17/Documents/new pred/%s_%d_%d.png' %
                                (osp.splitext(osp.basename(slide_paths_total[i]))[0], r[8][n][0], r[8][n][1]), r[n])
 
-                        io.imsave('/home/wli/Downloads/test/mask/%s_%d_%d_mask.png' % (
-                            osp.splitext(osp.basename(slide_paths_total[i]))[0], r[8][n][0], r[8][n][1]), r[n+4])
+                        io.imsave('/Users/liw17/Documents/new pred/%s_%d_%d_mask.png' % (osp.splitext(
+                            osp.basename(slide_paths_total[i]))[0], r[8][n][0], r[8][n][1]), r[n+4])
 
                         print(r[n])
 
-                        m = m+1
+                    m = m+5
 
-                    else:
-                        m = m
+                print(m)
 
     i = i+1
