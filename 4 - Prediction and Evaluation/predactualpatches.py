@@ -42,7 +42,7 @@ from keras import backend as keras
 #BASE_TRUTH_DIR = Path('/home/wli/Downloads/camelyontest/mask')
 
 #slide_path = '/home/wli/Downloads/CAMELYON16/training/tumor/'
-slide_path = '/Users/liw17/Documents/camelyon16/train/tumor/'
+slide_path = '/home/wli/Downloads/googlepred/'
 
 #slide_path = '/home/wli/Downloads/CAMELYON16/training/normal/'
 
@@ -53,8 +53,9 @@ slide_path = '/Users/liw17/Documents/camelyon16/train/tumor/'
 
 slide_paths = glob.glob(osp.join(slide_path, '*.tif'))
 
-index_path = '/Users/liw17/Documents/pred_dim/normal/'
-index_paths = glob.glob(osp.join(slide_path, '*.pkl'))
+#index_path = '/Users/liw17/Documents/pred_dim/normal/'
+index_path = '/home/wli/Downloads/predpatches/'
+index_paths = glob.glob(osp.join(index_path, '*.pkl'))
 
 
 #slide_paths_validation = glob.glob(osp.join(slide_path_validation, '*.tif'))
@@ -70,18 +71,15 @@ index_paths = glob.glob(osp.join(slide_path, '*.pkl'))
 NUM_CLASSES = 2  # not_tumor, tumor
 
 
-def gen_imgs(samples, batch_size, shuffle=False):
+def gen_imgs(samples, batch_size, slide, shuffle=False):
     """This function returns a generator that 
     yields tuples of (
         X: tensor, float - [batch_size, 224, 224, 3]
         y: tensor, int32 - [batch_size, 224, 224, NUM_CLASSES]
     )
-
-
     input: samples: samples dataframe
     input: batch_size: The number of images to return for each pull
     output: yield (X_train, y_train): generator of X, y tensors
-
     option: base_truth_dir: path, directory of truth slides
     option: shuffle: bool, if True shuffle samples
     """
@@ -93,16 +91,15 @@ def gen_imgs(samples, batch_size, shuffle=False):
 
     for _, batch_sample in batch_samples.iterrows():
 
-        with openslide.open_slide(batch_sample.slide_path) as slide:
-            #tiles = DeepZoomGenerator(slide, tile_size=224, overlap=0, limit_bounds=False)
-            xy = batch_sample.tile_loc[::]
-            #xy = batch_sample.tile_loc[::-1]
-            xylarge = [x * 224 for x in xy]
-            print(batch_sample.tile_loc[::], xylarge)
-            #img = tiles.get_tile(tiles.level_count-1, batch_sample.tile_loc[::-1])
-            img = slide.read_region(xylarge, 0, crop_size)
-            img = np.array(img)
-            img = img[:, :, :3]
+        #tiles = DeepZoomGenerator(slide, tile_size=224, overlap=0, limit_bounds=False)
+        #xy = batch_sample.tile_loc[::]
+        xy = batch_sample.tile_loc[::-1]
+        xylarge = [x * 224 for x in xy]
+        print(batch_sample.tile_loc[::-1], xylarge)
+        #img = tiles.get_tile(tiles.level_count-1, batch_sample.tile_loc[::-1])
+        img = slide.read_region(xylarge, 0, crop_size)
+        img = np.array(img)
+        img = img[:, :, :3]
 
         images.append(img)
 
@@ -121,7 +118,7 @@ def predict_batch_from_model(patches, model):
 
 
 model = load_model(
-    '/Users/liw17/Documents/new pred/googlenet0917-02-0.93.hdf5')
+    '/home/wli/Downloads/googlenet0917-02-0.93.hdf5')
 alpha = 0.5
 
 #slide = openslide.open_slide(slide_paths[0])
@@ -144,14 +141,17 @@ while i < len(slide_paths):
     output_thumbnail_preds = list()
  #   all_samples = find_patches_from_slide(
  #      slide_paths[i], filter_non_tissue=False)
-    all_samples = np.load(index_paths[i])
+    all_samples = pd.read_pickle(index_paths[i])
+    all_samples.slide_path = slide_paths[i]
+    print(all_samples)
     n_samples = len(all_samples)
-
+    slide = openslide.open_slide(slide_paths[i])
+    
     for offset in tqdm(list(range(0, n_samples, batch_size))):
         batch_samples = all_samples.iloc[offset:offset+batch_size]
         #png_fnames = batch_samples.tile_loc.apply(lambda coord: str(output_dir / ('%d_%d.png' % coord[::-1])))
 
-        X = next(gen_imgs(batch_samples, batch_size, shuffle=False))
+        X = next(gen_imgs(batch_samples, batch_size, slide, shuffle=False))
 
         preds = predict_batch_from_model(X, model)
 
@@ -173,7 +173,7 @@ while i < len(slide_paths):
 
     #output_thumbnail_preds = np.array(output_thumbnail_preds)
 
-    np.save('/Users/liw17/Documents/new pred/rawheatmap10-11' %
+    np.save('/home/wli/Downloads/googlepred/%s' %
             (osp.splitext(osp.basename(slide_paths[i]))[0]), output_thumbnail_preds)
 
     i = i+1
