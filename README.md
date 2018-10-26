@@ -223,7 +223,7 @@ Comparison of predicted with ground truth for tumor_005:
 ### 4.2a Slide-based Classification
 
 
-Extracting Features for whole-slide image classification task
+Extracting Features from heatmaps for whole-slide image classification task
 
 #### Global Features Extraction
 
@@ -235,7 +235,7 @@ caculate them at 5 different thresholds (0.5, 0.6, 0.7, 0.8, 0.9), so the total 
 
 Based on 2 largest metastatic candidate regions (select them based on a threshold of 0.5).
 
-9 features were extracted from the 2 largest regions:
+10 features were extracted from the 2 largest regions:
 
 1. Area: the area of connected region
 2. Eccentricity: The eccentricity of the ellipse that has the same second-moments as the region
