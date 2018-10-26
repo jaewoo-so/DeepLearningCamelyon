@@ -26,9 +26,9 @@ Compare the ASAP with OpenSlide: ASAP doesn’t have detailed manual to describe
    
 ### 0.3 Mask file generation
 
-- Mask file is the ground truth for model training. Mask file has the exact same dimensions as its corresponding WSI image.  Mask file is a binary file with normal tissue coded as ‘0’ and tumor tissue coded as ‘1’ for each corresponding pixel of WSI image. 
-- [Mask file generation](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/1%20-%20WSI%20Visualization%20with%20Annotation/Mask%20Generation)
-  file name and address: /home/wli/Downloads/
+- Mask files save the ground truth for model training. The mask has the exact same dimensions as its corresponding WSI image.  The mask file is a binary file with normal tissue coded as ‘0’ and tumor tissue coded as ‘1’ for each corresponding pixel of a WSI image. 
+- [Code for Mask file generation](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/1%20-%20WSI%20Visualization%20with%20Annotation/Mask%20Generation)
+  file name and address [local computer]: /home/wli/Downloads/
 
   input data address: slide_path = '/home/wli/Downloads/CAMELYON16/training/tumor'
                       anno_path = '/home/wli/Downloads/CAMELYON16/training/Lesion_annotations'
