@@ -28,6 +28,7 @@ Compare the ASAP with OpenSlide: ASAP doesn’t have detailed manual to describe
 
 - Mask files save the ground truth for model training. The mask has the exact same dimensions as its corresponding WSI image.  The mask file is a binary file with normal tissue coded as ‘0’ and tumor tissue coded as ‘1’ for each corresponding pixel of a WSI image. 
 - [Code for Mask file generation](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/1%20-%20WSI%20Visualization%20with%20Annotation/Mask%20Generation)
+
   file name and address [local computer]: /home/wli/Downloads/
 
   input data address: slide_path = '/home/wli/Downloads/CAMELYON16/training/tumor'
@@ -138,6 +139,8 @@ To reduce computation, the blank regions (no tissue) on slide will be excluded.
 -[FCN training](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/3%20-%20Training%20Neural%20Network/Model%20training%20code%20for%20fully%20convolutional%20neural%20network)
 
 FCN prediction
+
+[Code for FCN and Unet Prediction](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Prediction_fcn_unet.py)
 
 <img src="https://github.com/3dimaging/Accessory/blob/master/fcn-predicion%20tumor.png" width="250">
 
