@@ -195,6 +195,11 @@ Test images were divided into non-overlapping small patches; each patch will get
 Heatmap is a way to display the probability 
 
  - [Code for prediction - googlenet](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Prediction_googlenet.py)
+ 
+ - [Code for prediction - slide window - googlenet](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/predactualpatches_16pixelgap.py)
+ 
+ - [Code for prediction - FCN - googlenet](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/pred_googlenet_fcn_10_22.py)
+ 
  - [Code for prediction - FCN and U-net](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Prediction_fcn_unet.py)
 
 
