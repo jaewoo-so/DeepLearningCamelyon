@@ -89,7 +89,7 @@ def gen_imgs(samples, batch_size, slide, shuffle=False):
 
     images = []
 
-    for _, batch_sample in batch_samples.iterrows():
+    for _, batch_sample in samples.iterrows():
 
         #tiles = DeepZoomGenerator(slide, tile_size=224, overlap=0, limit_bounds=False)
         #xy = batch_sample.tile_loc[::]
