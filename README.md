@@ -101,6 +101,16 @@ To reduce computation, the blank regions (no tissue) on slide will be excluded.
 - adding color noise (Method II)
 	   
  <img src="https://github.com/3dimaging/Accessory/blob/master/patch%20flip%20noise.png" width="500">
+ 
+ Dayong Wang's method (Based on HSV image patches):
+ 
+ <img src="https://github.com/3dimaging/Accessory/blob/master/dayong_addingcolornoise_HSV.png" width="500">
+ 
+ Liu Yun's method (also called color perturbation):
+ 
+ <img src="https://github.com/3dimaging/Accessory/blob/master/color_pertubation_liu_yun_1.png" width="500">
+ <img src="https://github.com/3dimaging/Accessory/blob/master/color_perturbation_liu_yun_2.png" width="500">
+
 
 	   
 	   
