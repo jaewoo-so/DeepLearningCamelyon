@@ -6,7 +6,7 @@
 ## 0 - Preparation
 ### 0.1 Set up deep learning environment.
 
-- [Setup Python Environment](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/0%20-%20Preparation/Seup%20Machine%20Learning%20Environment.py)
+- [Setup Python Environment](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/0%20-%20Preparation/Setup%20Machine%20Learning%20Environment.py)
 
 - [Python IDE](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/0%20-%20Preparation/Python%20IDE%20(Emacs%20%2B%20Org%20%2B%20Ob-iPython))
   ![alt text](https://github.com/3dimaging/Accessory/blob/master/destopshot.png)
