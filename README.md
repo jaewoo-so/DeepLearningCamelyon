@@ -8,7 +8,7 @@
 
 - [Setup Python Environment](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/0%20-%20Preparation/Setup%20Machine%20Learning%20Environment.py)
 
-- [Python IDE](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/0%20-%20Preparation/Python%20IDE%20(Emacs%20%2B%20Org%20%2B%20Ob-iPython))
+- [Python IDE](https://github.com/3dimaging/DeepLearningCamelyon/blob/master/0%20-%20Preparation/Python%20IDE%20(Emacs%20%2B%20Org%20%2B%20Ob-iPython).md)
   ![alt text](https://github.com/3dimaging/Accessory/blob/master/destopshot.png)
   
 - [Package Installation for Color Normalization](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/0%20-%20Preparation/Staintools)
