@@ -102,9 +102,13 @@ To reduce computation, the blank regions (no tissue) on slide will be excluded.
 	   
  <img src="https://github.com/3dimaging/Accessory/blob/master/patch%20flip%20noise.png" width="500">
  
- Dayong Wang's method (Based on HSV image patches):
+ [Dayong Wang's method](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/2%20-%20Image%20Preprocess/Adding_Color_Noise/Color_Noise.py) (Based on HSV image patches):
  
  <img src="https://github.com/3dimaging/Accessory/blob/master/dayong_addingcolornoise_HSV.png" width="500">
+ 
+ If the image patches were not transformed to HSV, the image patches after adding color noise look like this:
+ 
+  <img src="https://github.com/3dimaging/Accessory/blob/master/dayong_addingcolornoise_rgb.png" width="500">
  
  [Liu Yun's method](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/2%20-%20Image%20Preprocess/Adding_Color_Noise/color%20perturbation.py) (also called color perturbation):
  
