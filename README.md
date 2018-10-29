@@ -106,7 +106,7 @@ To reduce computation, the blank regions (no tissue) on slide will be excluded.
  
  <img src="https://github.com/3dimaging/Accessory/blob/master/dayong_addingcolornoise_HSV.png" width="500">
  
- Liu Yun's method (also called color perturbation):
+ [Liu Yun's method](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/2%20-%20Image%20Preprocess/Adding_Color_Noise/color%20perturbation.py) (also called color perturbation):
  
  <img src="https://github.com/3dimaging/Accessory/blob/master/color_pertubation_liu_yun_1.png" width="500">
  <img src="https://github.com/3dimaging/Accessory/blob/master/color_perturbation_liu_yun_2.png" width="500">
