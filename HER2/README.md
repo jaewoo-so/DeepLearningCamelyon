@@ -1,4 +1,4 @@
-# Robustness of Deep Learning System assesing HER2 Classification
+# Robustness of Deep Learning (DL) System assesing HER2 Classification
 Authors: Sarah Dudgeon, Marios Gavrielides
 
 ## Objecives 
