@@ -10,6 +10,33 @@ from skimage.measure import label
 from skimage.measure import regionprops
 from skimage.segmentation import clear_border
 from skimage.morphology import closing, square
+from matplotlib import cm
+from tqdm import tqdm
+from skimage.filters import threshold_otsu
+from keras.models import load_model
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import os.path as osp
+import openslide
+from pathlib import Path
+from skimage.filters import threshold_otsu
+import glob
+import math
+# before importing HDFStore, make sure 'tables' is installed by pip3 install tables
+from pandas import HDFStore
+from openslide.deepzoom import DeepZoomGenerator
+from sklearn.model_selection import StratifiedShuffleSplit
+from keras.utils.np_utils import to_categorical
+
+
+import os.path as osp
+import openslide
+from pathlib import Path
+import numpy as np
+import skimage.io as io
+import skimage.transform as trans
+
 #features for whole-slide image classification task
 #global features
 #
@@ -29,9 +56,40 @@ from skimage.morphology import closing, square
 #   7. Aspect ratio of the bounding box
 #   8. Solidity: Ratio of region area over the surrounding convex area
 
+#BASE_TRUTH_DIR = Path('/home/wli/Downloads/camelyontest/mask')
+
+#slide_path = '/home/wli/Downloads/CAMELYON16/training/tumor/'
+slide_path = '/home/wli/Downloads/googlepred/'
+
+#slide_path = '/home/wli/Downloads/CAMELYON16/training/normal/'
+
+#slide_path_validation = '/home/wli/Downloads/CAMELYON16/training/tumor/validation/'
+#slide_path_validation = '/home/wli/Downloads/CAMELYON16/training/normal/validation/'
+#truth_path = str(BASE_TRUTH_DIR / 'tumor_026_Mask.tif')
+#slide_paths = list(slide_path)
+
+slide_paths = glob.glob(osp.join(slide_path, '*.tif'))
+slide_paths.sort()
+print(slide_paths)
+
+#index_path = '/Users/liw17/Documents/pred_dim/normal/'
+heatmap_path = '/home/wli/Downloads/googlepred/heat_map/'
+heatmap_paths = glob.glob(osp.join(heatmap_path, '*.npy'))
+heatmap_paths.sort()
+print(heatmap_paths)
 
 
-N_FEATURES = 32
+#slide_paths_validation = glob.glob(osp.join(slide_path_validation, '*.tif'))
+
+#slide_paths = slide_paths + slide_paths_validation
+#slide_paths = slide_path
+
+# slide_paths.sort()
+
+#slide = openslide.open_slide(slide_path)
+
+
+N_FEATURES = 30
 # for global features
 
 def glob_features (slide_path, heatmap):
@@ -42,7 +100,7 @@ def glob_features (slide_path, heatmap):
             thumbnail = slide.get_thumbnail((dtotal[0], dtotal[1]))
             thum = np.array(thumbnail)
             ddtotal = thum.shape
-            dimensions.extend(ddtotal)
+            #dimensions.extend(ddtotal)
             hsv_image = cv2.cvtColor(thum, cv2.COLOR_BGR2HSV)
             h, s, v = cv2.split(hsv_image)
             hthresh = threshold_otsu(h)
@@ -66,11 +124,11 @@ def glob_features (slide_path, heatmap):
             predthreshold90 = heatmap > 0.9
 
 
-            ratio_cancer_tissue50 =  cv2.countNonZero(predthrsold50*1)/rgbbinaryarea
-            ratio_cancer_tissue60 =  cv2.countNonZero(predthrsold60*1)/rgbbinaryarea
-            ratio_cancer_tissue70 =  cv2.countNonZero(predthrsold70*1)/rgbbinaryarea
-            ratio_cancer_tissue80 =  cv2.countNonZero(predthrsold80*1)/rgbbinaryarea
-            ratio_cancer_tissue90 =  cv2.countNonZero(predthrsold90*1)/rgbbinaryarea
+            ratio_cancer_tissue50 =  cv2.countNonZero(predthreshold50*1)/rgbbinaryarea
+            ratio_cancer_tissue60 =  cv2.countNonZero(predthreshold60*1)/rgbbinaryarea
+            ratio_cancer_tissue70 =  cv2.countNonZero(predthreshold70*1)/rgbbinaryarea
+            ratio_cancer_tissue80 =  cv2.countNonZero(predthreshold80*1)/rgbbinaryarea
+            ratio_cancer_tissue90 =  cv2.countNonZero(predthreshold90*1)/rgbbinaryarea
 
             
             predthreshold250 = heatmap - 0.5
@@ -101,7 +159,7 @@ def glob_features (slide_path, heatmap):
 # for local features
 
 def get_region_props(heatmapbinary, heatmap):
-    heatmapbinary = closing(heatmapbinary, square[3])
+    #heatmapbinary = closing(heatmapbinary, square[3])
     heatmapbinary = clear_border(heatmapbinary)
     labeled_img = label(heatmapbinary)
     return regionprops(labeled_img, intensity_image=heatmap)
@@ -129,7 +187,7 @@ def get_second_largest_tumor_index_area(region_props, largest_index):
 
     n_regions = len(region_props)
     for index in range(n_regions):
-        if region_props[index]['area'] > largest_tumor_area and region_props[index]['area'] < region_props[largest_index]['area']: 
+        if region_props[index]['area'] > second_largest_tumor_area and region_props[index]['area'] < region_props[largest_index]['area']: 
             second_largest_tumor_area = region_props[index]['area']
             second_largest_tumor_index = index
 
@@ -149,56 +207,58 @@ def get_second_largest_tumor_index_area(region_props, largest_index):
 #    return max(tumor_region['major_axis_length'], tumor_region['minor_axis_length'])
 
 
-def local_features(heatmap_prob):
+def local_features(heatmap):
     
 
     heatmapbinary = (heatmap > 0.5)*1
 
 
-    localfeatures = []
+    features = []
     
     # extract parameters from regionprops function of scikit-image
 
     region_props_largest = get_region_props(heatmapbinary, heatmap)
 
-    number_tumor_region = len(region_props_t90)
+    number_tumor_region = len(region_props_largest)
 
     if number_tumor_region == 0:
         return [0.00] * N_FEATURES
 
-
+    #else:
     #   1. Area: the area of connected region
 
     # the area and index of largest lesion:
 
-    largest_lesion = get_largest_tumor_index(region_props_largest)
+    largest_lesion = get_largest_tumor_index_area(region_props_largest)
 
     largest_area = largest_lesion[1]
 
     largest_index = largest_lesion[0]
 
-    features.extend(largest_area)
+    #print(largest_area)
+
+    #features.append(largest_area)
 
     #   2. Eccentricity: The eccentricity of the ellipse that has the same second-moments as the region
     eccentricity_largest = region_props_largest[largest_index]['eccentricity']
 
-    features.extend(eccentricity_largest)
+    #features.append(eccentricity_largest)
 
     #   3. Extend: The ratio of region area over the total bounding box area
-    extent_largest = region_props_largest[largest_index]['extent']
+    extend_largest = region_props_largest[largest_index]['extent']
 
-    features.extend(extent_largest)
+    #features.append(extent_largest)
     
     #   4. Bounding box area
     area_bbox_largest = region_props_largest[largest_index]['bbox_area']
 
-    features.extend(area_bbox_largest)
+    #features.append(area_bbox_largest)
 
 
     #   5. Major axis length: the length of the major axis of the ellipse that has the same normalized second central moments as the region
     major_axis_length_largest = region_props_largest[largest_index]['major_axis_length']
 
-    features.extend(major_axis_length_largest)
+    features.append(major_axis_length_largest)
 
 
     #   6. Max/mean/min intensity: The max/mean/minimum probability value in the region
@@ -207,18 +267,18 @@ def local_features(heatmap_prob):
     minprob_largest = region_props_largest[largest_index]['min_intensity']
     aveprob_largest = region_props_largest[largest_index]['mean_intensity']
 
-    features.extend(maxprob_largest, minprob_largest_aveprob_largest)
+    #features.append(maxprob_largest, minprob_largest, aveprob_largest)
 
     #   7. Aspect ratio of the bounding box
     coordinates_of_bbox_largest = region_props_largest[largest_index]['bbox']
     aspect_ratio_bbox_largest = (coordinates_of_bbox_largest[2]-coordinates_of_bbox_largest[0])/(coordinates_of_bbox_largest[3]-coordinates_of_bbox_largest[1])
 
-    features.extend(aspect_ratio_bbox_largest)
+    #features.append(aspect_ratio_bbox_largest)
 
     #   8. Solidity: Ratio of region area over the surrounding convex area
     solidity_largest = region_props_largest[largest_index]['solidity']
 
-    features.extend(solidity_largest)
+    #features.append(solidity_largest)
 
 
 
@@ -226,82 +286,75 @@ def local_features(heatmap_prob):
 
     # the area and index of largest lesion:
 
-    second_largest_lesion = get_second_largest_tumor_index(region_props_largest)
+    second_largest_lesion = get_second_largest_tumor_index_area(region_props_largest, largest_index = largest_lesion[0])
 
     second_largest_area = second_largest_lesion[1]
 
     second_largest_index = second_largest_lesion[0]
 
-    features.extend(second_largest_area)
+    #features.append(second_largest_area)
 
     #   2. Eccentricity: The eccentricity of the ellipse that has the same second-moments as the region
-    eccentricity_second_largest = region_props_second_largest[second_largest_index]['eccentricity']
+    eccentricity_second_largest = region_props_largest[second_largest_index]['eccentricity']
 
-    features.extend(eccentricity_second_largest)
+    #features.append(eccentricity_second_largest)
 
     #   3. Extend: The ratio of region area over the total bounding box area
-    extent_second_largest = region_props_second_largest[second_largest_index]['extent']
+    extend_second_largest = region_props_largest[second_largest_index]['extent']
 
-    features.extend(extent_second_largest)
+    #features.append(extent_second_largest)
     
     #   4. Bounding box area
-    area_bbox_second_largest = region_props_second_largest[second_largest_index]['bbox_area']
+    area_bbox_second_largest = region_props_largest[second_largest_index]['bbox_area']
 
-    features.extend(area_bbox_second_largest)
+    #features.append(area_bbox_second_largest)
 
 
     #   5. Major axis length: the length of the major axis of the ellipse that has the same normalized second central moments as the region
-    major_axis_length_second_largest = region_props_second_largest[second_largest_index]['major_axis_length']
+    major_axis_length_second_largest = region_props_largest[second_largest_index]['major_axis_length']
 
-    features.extend(major_axis_length_second_largest)
+    #features.append(major_axis_length_second_largest)
 
 
     #   6. Max/mean/min intensity: The max/mean/minimum probability value in the region
 
-    maxprob_second_largest = region_props_second_largest[second_largest_index]['max_intensity']
-    minprob_second_largest = region_props_second_largest[second_largest_index]['min_intensity']
-    aveprob_second_largest = region_props_second_largest[second_largest_index]['mean_intensity']
+    maxprob_second_largest = region_props_largest[second_largest_index]['max_intensity']
+    minprob_second_largest = region_props_largest[second_largest_index]['min_intensity']
+    aveprob_second_largest = region_props_largest[second_largest_index]['mean_intensity']
 
-    features.extend(maxprob_second_largest, minprob_second_largest_aveprob_second_largest)
+    #features.append(maxprob_second_largest, minprob_second_largest, aveprob_second_largest)
 
     #   7. Aspect ratio of the bounding box
-    coordinates_of_bbox_second_largest = region_props_second_largest[second_largest_index]['bbox']
+    coordinates_of_bbox_second_largest = region_props_largest[second_largest_index]['bbox']
     aspect_ratio_bbox_second_largest = (coordinates_of_bbox_second_largest[2]-coordinates_of_bbox_second_largest[0])/(coordinates_of_bbox_second_largest[3]-coordinates_of_bbox_second_largest[1])
 
-    features.extend(aspect_ratio_bbox_second_largest)
+    #features.extend(aspect_ratio_bbox_second_largest)
 
     #   8. Solidity: Ratio of region area over the surrounding convex area
-    solidity_second_largest = region_props_second_largest[second_largest_index]['solidity']
+    solidity_second_largest = region_props_largest[second_largest_index]['solidity']
 
-    features.extend(solidity_second_largest)
+    #features.append(solidity_second_largest)
 
-
+    localfeatures = [largest_area,eccentricity_largest,extend_largest,area_bbox_largest,major_axis_length_largest,maxprob_largest,minprob_largest, aveprob_largest, aspect_ratio_bbox_largest,solidity_largest,second_largest_area,eccentricity_second_largest,extend_second_largest,area_bbox_second_largest,major_axis_length_second_largest,maxprob_second_largest,minprob_second_largest,aveprob_second_largest,aspect_ratio_bbox_second_largest, solidity_second_largest]
 
     return localfeatures
 
 
-heatmap_path = '/home/wli/Downloads/pred/'
-heatmap_paths = glob.glob(osp.join(heatmap_path, '*.npy'))
-slide_path = '/home/wli/Downloads/Camelyon16/training/tumor'
+#heatmap_path = '/home/wli/Downloads/pred/'
+#heatmap_paths = glob.glob(osp.join(heatmap_path, '*.npy'))
+#slide_path = '/home/wli/Downloads/Camelyon16/training/tumor'
 
-cols = ['name', 'tumor', globalfeatures[0],globalfeatures[1],globalfeatures[2],globalfeatures[3],globalfeatures[4],globalfeatures[5],globalfeatures[6],globalfeatures[7],globalfeatures[8],globalfeatures[9],'largest_area','eccentricity_largest','extend_largest','area_bbox_largest','major_axis_length_largest','maxprob_largest','minprob_largest', 'aveprob_largest', 'solidity_largest','second_largest_area','eccentricity_second_largest','extend_second_largest','area_bbox_second_largest','major_axis_length_second_largest','maxprob_second_largest','minprob_second_largest', 'aveprob_second_largest', 'solidity_second_largest']
+cols = ['name', 'tumor', 'ratio_cancer_tissue50', 'ratio_cancer_tissue60','ratio_cancer_tissue70','ratio_cancer_tissue80','ratio_cancer_tissue90',  'ratio_sum_tissue50',  'ratio_sum_tissue60',  'ratio_sum_tissue70',  'ratio_sum_tissue80', 'ratio_sum_tissue90','largest_area','eccentricity_largest','extend_largest','area_bbox_largest','major_axis_length_largest','maxprob_largest','minprob_largest', 'aveprob_largest','aspect_ratio_bbox_largest' ,'solidity_largest','second_largest_area','eccentricity_second_largest','extend_second_largest','area_bbox_second_largest','major_axis_length_second_largest','maxprob_second_largest','minprob_second_largest', 'aveprob_second_largest', 'aspect_ratio_bbox_second_largest', 'solidity_second_largest']
 
-data_sheet_for_random_forest= pd.DataFrame(columns=cols)
+totalfeatures = []
 
-
+i=0
 for i in range(len(heatmap_paths)):
     heatmap = np.load(heatmap_paths[i])
-    slide_path = glob.glob(osp.join(slide_path, rename(split(basename(heatmap_path[i])))))
-    data_sheet_for_random_forest.at[i, 'name'] = basename(slide_path)
-
-    slide_contains_tumor = osp.basename(slide_paths[i]).startswith('tumor_')
-    if slide_contains_tumor:
-        data_sheet_for_random_forest.at[i, 'tumor'] = 1
-
-    else:
-
-        data_sheet_for_random_forest.at[i, 'tumor'] = 0
-
+    slide_path = slide_paths[i]
+    #slide_path = glob.glob(osp.join(slide_path, os.rename(split(basename(heatmap_path[i])))))
+    
+    #data_sheet_for_random_forest.at[i, 'name'] = osp.basename(slide_paths[i])
 
     
     heatmapbinary_lesion = (heatmap > 0.5)*1
@@ -314,14 +367,34 @@ for i in range(len(heatmap_paths)):
 
         features = glob_features(slide_path, heatmap) + local_features(heatmap)
 
+    slide_contains_tumor = osp.basename(slide_paths[i]).startswith('tumor_')
 
-    data_sheet_for_random_forest = data_sheet_for_random_forest.append(pd.Series(features, index=cols[2:]), ignore_index=True)
+    if slide_contains_tumor:
+        features = [1] + features
+        #data_sheet_for_random_forest.at[i, 'tumor'] = 1
+
+    else:
+        
+        features = [0] + features
+        #data_sheet_for_random_forest.at[i, 'tumor'] = 0
+    features = [osp.basename(slide_paths[i])] + features   
+    #data_sheet_for_random_forest = data_sheet_for_random_forest.append(features)
+    print(features)
+    totalfeatures.append(features)
+    #data_sheet_for_random_forest.append(pd.Series(features, index=cols[:]), ignore_index=True)
+    #data_sheet_for_random_forest = data_sheet_for_random_forest.append(pd.Series(features, index=cols[2:]), ignore_index=True)
+
+    #data_sheet_for_random_forest.at[i, 'name'] = osp.basename(slide_paths[i])
+
+
+
+    i = i+1
 
 
 
 
 
-
-
+data_sheet_for_random_forest= pd.DataFrame(totalfeatures, columns=cols)
 
 data_sheet_for_random_forest.to_csv('data_sheet_for_random_forest.csv')
+
