@@ -56,5 +56,13 @@
            
            We also found that for method I, HMS&MIT group use learning rate of 0.01, 0.001, 0.0001, 0.00001, trained the model by using this learning rate.
            
+ # 10-31-18 
+ 
+ - done: debug the code for feature extraction
+ - done: heatmap generation for test (non-overlap)
+ 
+ - todo: image patch augmentation for hard negative mining
+ - todo: feed random forest 
+           
            
            
