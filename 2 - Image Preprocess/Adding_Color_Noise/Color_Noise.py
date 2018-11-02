@@ -14,7 +14,7 @@ m = m[:,:,:3]
 # adding color noise based on the rgb image patches
 m_colornoise = m + np.random.uniform(0, 20, size=(1,3))
 m_integ = m_colornoise.astype('uint8')
-# adding color noise based on the HSV image patches
+# adding color noise based on the HSV image patches (preferred)
 import cv2
 m_hsv = cv2.cvtColor(m, cv2.COLOR_BGR2HSV)
 m_hsv_colornoise = m_hsv + np.random.uniform(0, 20, size=(1,3))
