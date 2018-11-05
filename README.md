@@ -288,6 +288,10 @@ Based on 2 largest metastatic candidate regions (select them based on a threshol
 
 <img src="https://github.com/3dimaging/Accessory/blob/master/important%20features.png" width="1000">
 
+<img src="https://github.com/3dimaging/Accessory/blob/master/Screen%20Shot%202018-11-05%20at%204.38.04%20PM.png" width="300">
+
+
+
 ##### Testing
 
 <img src="https://github.com/3dimaging/Accessory/blob/master/compare%20pred%20and%20truth.png" width="500">
