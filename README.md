@@ -264,7 +264,7 @@ Based on 2 largest metastatic candidate regions (select them based on a threshol
 
 #### Results
 
- <img src="https://github.com/3dimaging/Accessory/blob/master/feature%20extraction.png" width="250">
+ <img src="https://github.com/3dimaging/Accessory/blob/master/feature%20extraction.png" width="800">
  
 #### Random Forest Training and Testing
 
@@ -272,15 +272,15 @@ Based on 2 largest metastatic candidate regions (select them based on a threshol
 
 - Training Accuracy
 
-<img src="https://github.com/3dimaging/Accessory/blob/master/auc%20value.png" width="250">
+<img src="https://github.com/3dimaging/Accessory/blob/master/auc%20value.png" width="500">
 
 - Important Features
 
-<img src="https://github.com/3dimaging/Accessory/blob/master/important%20features.png" width="250">
+<img src="https://github.com/3dimaging/Accessory/blob/master/important%20features.png" width="1000">
 
 ##### Testing
 
-<img src="https://github.com/3dimaging/Accessory/blob/master/compare%20pred%20and%20truth.png" width="250">
+<img src="https://github.com/3dimaging/Accessory/blob/master/compare%20pred%20and%20truth.png" width="800">
 
 
 
@@ -301,7 +301,7 @@ Based on 2 largest metastatic candidate regions (select them based on a threshol
  
  - Result (no hard negative mining)
  
- <img src="https://github.com/3dimaging/Accessory/blob/master/roc_curve.png" width="250">
+ <img src="https://github.com/3dimaging/Accessory/blob/master/roc_curve.png" width="500">
  
  
  - [Code for FROC](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Evaluation/FROC_from_organizer.py)
