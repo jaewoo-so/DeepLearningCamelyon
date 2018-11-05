@@ -201,6 +201,16 @@ Extract additional training patches from false positive regions
 
  - [Code for generate index of false positive patches](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Generate_Index_For_False_Positive_Patches.py)
  - [Code for generate patches and its mask files](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Generate_False_Positive_Patches.py)
+ 
+ - The false positive patches
+ 
+  <img src="https://github.com/3dimaging/Accessory/blob/master/false%20positive%20patches.png" width="900">
+  
+ - False positive patches (might not be false)
+ 
+   <img src="https://github.com/3dimaging/Accessory/blob/master/wrong%20predicted%20patches.png" width="900">
+
+ 
 
 ## 4 - Prediction and Evaluation
 ### 4.1 Make predictions and construct heatmaps
@@ -264,7 +274,7 @@ Based on 2 largest metastatic candidate regions (select them based on a threshol
 
 #### Results
 
- <img src="https://github.com/3dimaging/Accessory/blob/master/feature%20extraction.png" width="800">
+ <img src="https://github.com/3dimaging/Accessory/blob/master/feature%20extraction.png" width="1000">
  
 #### Random Forest Training and Testing
 
@@ -280,7 +290,7 @@ Based on 2 largest metastatic candidate regions (select them based on a threshol
 
 ##### Testing
 
-<img src="https://github.com/3dimaging/Accessory/blob/master/compare%20pred%20and%20truth.png" width="800">
+<img src="https://github.com/3dimaging/Accessory/blob/master/compare%20pred%20and%20truth.png" width="500">
 
 
 
