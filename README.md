@@ -237,15 +237,15 @@ Comparison of predicted with ground truth for tumor_005:
 ### 4.2a Slide-based Classification
 
 
-Extracting Features from heatmaps for whole-slide image classification task
+#### Extracting Features from heatmaps for whole-slide image classification task
 
-#### Global Features Extraction
+##### Global Features Extraction
 
 1. The ratio between the area of metastatic regions and the tissue area.
 2. The sum of all cancer metastases probailities detected in the metastasis identification task, divided by the tissue area. 
 caculate them at 5 different thresholds (0.5, 0.6, 0.7, 0.8, 0.9), so the total 10 global features
 
-#### Local Features Extraction 
+##### Local Features Extraction 
 
 Based on 2 largest metastatic candidate regions (select them based on a threshold of 0.5).
 
@@ -260,7 +260,31 @@ Based on 2 largest metastatic candidate regions (select them based on a threshol
 7. Aspect ratio of the bounding box
 8. Solidity: Ratio of region area over the surrounding convex area
 
-#### [code for Global and Local Features Extraction](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Evaluation/Feature_extraction_for_random_forest.py)
+##### [code for Global and Local Features Extraction](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Evaluation/Feature_extraction_for_random_forest.py)
+
+#### Results
+
+ <img src="https://github.com/3dimaging/Accessory/blob/master/feature%20extraction.png" width="250">
+ 
+#### Random Forest Training and Testing
+
+##### Training
+
+- Training Accuracy
+
+<img src="https://github.com/3dimaging/Accessory/blob/master/auc%20value.png" width="250">
+
+- Important Features
+
+<img src="https://github.com/3dimaging/Accessory/blob/master/important%20features.png" width="250">
+
+##### Testing
+
+<img src="https://github.com/3dimaging/Accessory/blob/master/compare%20pred%20and%20truth.png" width="250">
+
+
+
+
 
 ### 4.2b Lesion-based Detection
    	 
@@ -272,8 +296,14 @@ Based on 2 largest metastatic candidate regions (select them based on a threshol
 
 
 ### 4.3 ROC and FROC Generation
-
+#### ROC
  - [Code for ROC](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Evaluation/Random_Forest_Training_and_ROC.py)
+ 
+ - Result (no hard negative mining)
+ 
+ <img src="https://github.com/3dimaging/Accessory/blob/master/roc_curve.png" width="250">
+ 
+ 
  - [Code for FROC](https://github.com/DIDSR/DeepLearningCamelyon/blob/master/4%20-%20Prediction%20and%20Evaluation/Evaluation/FROC_from_organizer.py)
 
 # Teams using GoogleNet
